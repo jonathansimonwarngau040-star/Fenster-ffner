@@ -1,40 +1,69 @@
-// Test 2 (von Claude geflasht): LED blinkt schnell, Board scannt seine
-// eingebauten Sensoren am internen I2C-Bus (Wire1) und meldet sie per Serial.
+// Raumluft-Logger: SCD41 (CO2, Temperatur, Feuchte) am Nano 33 BLE
+// Anschluss: VCC->3V3, GND->GND, SDA->A4, SCL->A5
+// Serial-Ausgabe (alle 30 s, Mittelwert): luft;CO2_ppm;Temp_C;Feuchte_%
+// RGB-LED als Ampel: gruen <1000 ppm, gelb 1000-1400, rot >1400
 #include <Wire.h>
+#include <SensirionI2cScd4x.h>
 
-struct Chip { uint8_t addr; const char* name; };
-const Chip known[] = {
-  {0x6B, "LSM9DS1 IMU (Rev1)"}, {0x1E, "LSM9DS1 Magnetometer (Rev1)"},
-  {0x68, "BMI270 IMU (Rev2)"},  {0x10, "BMM150 Magnetometer (Rev2)"},
-  {0x5F, "HTS221 Temp/Feuchte (Sense Rev1)"}, {0x44, "HS3003 Temp/Feuchte (Sense Rev2)"},
-  {0x5C, "LPS22HB Luftdruck (Sense)"}, {0x39, "APDS9960 Licht/Naeherung/Gesten (Sense)"},
-};
+SensirionI2cScd4x scd;
+const unsigned long LOG_MS = 30000;
 
-void scan() {
-  Serial.println("scan;start");
-  for (uint8_t a = 1; a < 127; a++) {
-    Wire1.beginTransmission(a);
-    if (Wire1.endTransmission() == 0) {
-      const char* n = "unbekannt";
-      for (auto& c : known) if (c.addr == a) n = c.name;
-      Serial.print("scan;0x"); Serial.print(a, HEX); Serial.print(";"); Serial.println(n);
-    }
-  }
-  Serial.println("scan;ende");
+void led(bool r, bool g, bool b) {          // RGB-LED ist active-low
+  digitalWrite(LEDR, !r); digitalWrite(LEDG, !g); digitalWrite(LEDB, !b);
 }
+
+bool startSensor() {
+  scd.begin(Wire, SCD41_I2C_ADDR_62);
+  scd.wakeUp();
+  scd.stopPeriodicMeasurement();
+  delay(500);
+  scd.reinit();
+  return scd.startPeriodicMeasurement() == 0;
+}
+
+bool sensorOk = false;
+unsigned long lastLog = 0, lastRetry = 0;
+float sumCo2 = 0, sumT = 0, sumRh = 0; int n = 0;
 
 void setup() {
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(LEDR, OUTPUT); pinMode(LEDG, OUTPUT); pinMode(LEDB, OUTPUT);
+  led(0, 0, 1);
   Serial.begin(115200);
-  Wire1.begin();
+  Wire.begin();
   delay(2000);
+  sensorOk = startSensor();
+  Serial.println(sensorOk ? "status;SCD41 gestartet" : "fehler;SCD41 nicht gefunden");
 }
 
-unsigned long lastScan = 0;
 void loop() {
-  digitalWrite(LED_BUILTIN, (millis() / 150) % 2);
-  if (millis() - lastScan > 10000) {  // alle 10 s, damit es sicher im Log landet
-    lastScan = millis();
-    scan();
+  if (!sensorOk) {
+    led((millis() / 500) % 2, 0, 0);          // rot blinken = kein Sensor
+    if (millis() - lastRetry > 10000) {
+      lastRetry = millis();
+      sensorOk = startSensor();
+      Serial.println(sensorOk ? "status;SCD41 gestartet" : "fehler;SCD41 nicht gefunden");
+    }
+    return;
   }
+
+  bool ready = false;
+  if (scd.getDataReadyStatus(ready) == 0 && ready) {
+    uint16_t co2; float t, rh;
+    if (scd.readMeasurement(co2, t, rh) == 0 && co2 > 0) {
+      sumCo2 += co2; sumT += t; sumRh += rh; n++;
+      if (co2 < 1000)      led(0, 1, 0);
+      else if (co2 < 1400) led(1, 1, 0);
+      else                 led(1, 0, 0);
+    }
+  }
+
+  if (millis() - lastLog >= LOG_MS && n > 0) {
+    lastLog = millis();
+    Serial.print("luft;");
+    Serial.print(sumCo2 / n, 0); Serial.print(";");
+    Serial.print(sumT / n, 1);   Serial.print(";");
+    Serial.println(sumRh / n, 1);
+    sumCo2 = sumT = sumRh = 0; n = 0;
+  }
+  delay(100);
 }

@@ -1,0 +1,58 @@
+name: Build Fensteroeffner.exe
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "tools/**"
+      - ".github/workflows/build-exe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: arduino-cli herunterladen
+        shell: pwsh
+        run: |
+          Invoke-WebRequest https://downloads.arduino.cc/arduino-cli/arduino-cli_latest_Windows_64bit.zip -OutFile cli.zip
+          Expand-Archive cli.zip -DestinationPath cli
+
+      - name: exe bauen
+        shell: pwsh
+        run: |
+          pip install pyinstaller pyserial
+          pyinstaller --onefile --console --name Fensteroeffner `
+            --add-binary "cli/arduino-cli.exe;." tools/flasher.py
+
+      - name: Release "latest" aktualisieren
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete latest --yes --cleanup-tag 2>$null
+          gh release create latest dist/Fensteroeffner.exe `
+            --title "Fensteroeffner Flasher" `
+            --notes "Automatisch gebaut aus Commit ${{ github.sha }}"
+
+      - name: Build-Status ins Repo schreiben
+        if: always()
+        shell: pwsh
+        run: |
+          git config user.name "build-bot"
+          git config user.email "build@localhost"
+          git pull --rebase
+          New-Item -ItemType Directory -Force status | Out-Null
+          "${{ job.status }} $(Get-Date -Format s) commit ${{ github.sha }}" | Out-File status/build.txt -Encoding utf8
+          git add status/build.txt
+          git commit -m "Build-Status: ${{ job.status }}"
+          git push

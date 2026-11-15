@@ -1,27 +1,20 @@
 # Fensteröffner – Datensammlung mit Arduino Nano 33 BLE
 
-## Ablauf
-Claude pusht Code → PC flasht automatisch → Serial-Daten gehen zurück ins Repo.
+## Benutzung
+1. **Fensteroeffner.exe** herunterladen (bei GitHub eingeloggt sein):
+   https://github.com/jonathansimonwarngau040-star/Fenster-ffner/releases/latest/download/Fensteroeffner.exe
+2. Nano per USB anschließen, exe starten. Beim ersten Start installiert sie Git,
+   lädt dieses Repo nach `%USERPROFILE%\Fenster-ffner` (GitHub-Login im Browser)
+   und installiert das Board-Paket.
+3. Fenster offen lassen. Solange es läuft, flasht es neuen Code automatisch.
+   Fenster schließen = kein Zugriff mehr.
 
+## Aufbau
 ```
-sketches/current/   aktueller Sketch (+ optional libraries.txt, ein Library-Name pro Zeile)
-status/last_flash.txt   Compile/Upload-Ergebnis des letzten Flashvorgangs
-logs/serial_*.csv   Messdaten: Zeitstempel;Zeile vom Arduino
-tools/flasher.py    läuft dauerhaft auf dem PC
+sketches/current/       aktueller Sketch (+ optional libraries.txt)
+status/last_flash.txt   Compile/Upload-Ergebnis
+status/heartbeat.txt    Lebenszeichen des Flashers (alle 5 min)
+status/build.txt        Ergebnis des letzten exe-Builds
+logs/serial_*.csv       Messdaten: Zeitstempel;Zeile vom Arduino
+tools/flasher.py        Quellcode der exe (wird per GitHub Actions gebaut)
 ```
-
-## Einrichtung (einmalig, Windows)
-1. `tools/setup_windows.bat` ausführen, danach in neuem Terminal:
-   ```
-   arduino-cli core update-index
-   arduino-cli core install arduino:mbed_nano
-   pip install pyserial
-   ```
-2. Auf GitHub ein **privates** Repo `fensteroeffner` anlegen, diesen Ordner hineinpushen.
-3. Nano per USB anschließen und starten:
-   ```
-   python tools/flasher.py
-   ```
-   Die LED sollte nach kurzer Zeit blinken, `logs/` füllt sich mit `alive;…`-Zeilen.
-
-Das Fenster muss offen bleiben, solange geflasht/gemessen werden soll.

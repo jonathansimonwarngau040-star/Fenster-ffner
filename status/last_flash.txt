@@ -1,10 +1,24 @@
 ERGEBNIS: OK
-Zeit: 2026-11-15T17:13:01
-Commit: 7020cf5
+Zeit: 2026-11-15T17:19:21
+Commit: 2663412
+lib install Sensirion I2C SCD4x:
+Sensirion I2C SCD4x@1.1.0 wird heruntergeladen...
+
+Sensirion I2C SCD4x@1.1.0 0 B / 1.90 MiB    0.00%
+Sensirion I2C SCD4x@1.1.0 heruntergeladen
+Sensirion I2C SCD4x@1.1.0 wird installiert...
+Sensirion I2C SCD4x@1.1.0 installiert
+Sensirion Core@0.7.1 wird heruntergeladen...
+
+Sensirion Core@0.7.1 0 B / 37.03 KiB    0.00%
+Sensirion Core@0.7.1 heruntergeladen
+Sensirion Core@0.7.1 wird installiert...
+Sensirion Core@0.7.1 installiert
+
 
 === COMPILE ===
-Der Sketch verwendet 92896 Bytes (9%) des Programmspeicherplatzes. Das Maximum sind 983040 Bytes.
-Globale Variablen verwenden 45920 Bytes (17%) des dynamischen Speichers, 216224 Bytes für lokale Variablen verbleiben. Das Maximum sind 262144 Bytes.
+Der Sketch verwendet 94816 Bytes (9%) des Programmspeicherplatzes. Das Maximum sind 983040 Bytes.
+Globale Variablen verwenden 45976 Bytes (17%) des dynamischen Speichers, 216168 Bytes für lokale Variablen verbleiben. Das Maximum sind 262144 Bytes.
 
 === UPLOAD (COM7) ===
 Device       : nRF52840-QIAA
@@ -20,31 +34,32 @@ Security     : false
 Erase flash
 
 Done in 0.000 seconds
-Write 92904 bytes to flash (23 pages)
+Write 94824 bytes to flash (24 pages)
 
-[                              ] 0% (0/23 pages)
-[=                             ] 4% (1/23 pages)
-[==                            ] 8% (2/23 pages)
-[===                           ] 13% (3/23 pages)
-[=====                         ] 17% (4/23 pages)
-[======                        ] 21% (5/23 pages)
-[=======                       ] 26% (6/23 pages)
-[=========                     ] 30% (7/23 pages)
-[==========                    ] 34% (8/23 pages)
-[===========                   ] 39% (9/23 pages)
-[=============                 ] 43% (10/23 pages)
-[==============                ] 47% (11/23 pages)
-[===============               ] 52% (12/23 pages)
-[================              ] 56% (13/23 pages)
-[==================            ] 60% (14/23 pages)
-[===================           ] 65% (15/23 pages)
-[====================          ] 69% (16/23 pages)
-[======================        ] 73% (17/23 pages)
-[=======================       ] 78% (18/23 pages)
-[========================      ] 82% (19/23 pages)
-[==========================    ] 86% (20/23 pages)
-[===========================   ] 91% (21/23 pages)
-[============================  ] 95% (22/23 pages)
-[==============================] 100% (23/23 pages)
-Done in 3.820 seconds
+[                              ] 0% (0/24 pages)
+[=                             ] 4% (1/24 pages)
+[==                            ] 8% (2/24 pages)
+[===                           ] 12% (3/24 pages)
+[=====                         ] 16% (4/24 pages)
+[======                        ] 20% (5/24 pages)
+[=======                       ] 25% (6/24 pages)
+[========                      ] 29% (7/24 pages)
+[==========                    ] 33% (8/24 pages)
+[===========                   ] 37% (9/24 pages)
+[============                  ] 41% (10/24 pages)
+[=============                 ] 45% (11/24 pages)
+[===============               ] 50% (12/24 pages)
+[================              ] 54% (13/24 pages)
+[=================             ] 58% (14/24 pages)
+[==================            ] 62% (15/24 pages)
+[====================          ] 66% (16/24 pages)
+[=====================         ] 70% (17/24 pages)
+[======================        ] 75% (18/24 pages)
+[=======================       ] 79% (19/24 pages)
+[=========================     ] 83% (20/24 pages)
+[==========================    ] 87% (21/24 pages)
+[===========================   ] 91% (22/24 pages)
+[============================  ] 95% (23/24 pages)
+[==============================] 100% (24/24 pages)
+Done in 3.874 seconds
 Neuer Upload-Port: COM7 (serial)

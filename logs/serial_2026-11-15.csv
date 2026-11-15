@@ -155,3 +155,11 @@
 2026-11-15T17:19:58.555;scan;0x1E;LSM9DS1 Magnetometer (Rev1)
 2026-11-15T17:19:58.569;scan;0x6B;LSM9DS1 IMU (Rev1)
 2026-11-15T17:19:58.573;scan;ende
+2026-11-15T17:20:28.592;fehler;SCD41 nicht gefunden
+2026-11-15T17:20:38.594;fehler;SCD41 nicht gefunden
+2026-11-15T17:20:48.594;fehler;SCD41 nicht gefunden
+2026-11-15T17:20:58.593;fehler;SCD41 nicht gefunden
+2026-11-15T17:21:08.595;fehler;SCD41 nicht gefunden
+2026-11-15T17:21:18.595;fehler;SCD41 nicht gefunden
+2026-11-15T17:21:28.596;fehler;SCD41 nicht gefunden
+2026-11-15T17:21:38.598;fehler;SCD41 nicht gefunden

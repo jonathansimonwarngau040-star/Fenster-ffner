@@ -1,1 +1,0 @@
-Sensirion I2C SCD4x
